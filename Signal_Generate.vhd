@@ -256,7 +256,7 @@ U2:	process(clk)
 					i <= i+ 1; --INCREMETATION
 					k <= k+ 1;
 						if(k = 999) then
-					   k <= 0;
+					   k <= 0; --TEST
 					end if;
 					if(i = 1999) then
 						i <= 0;
