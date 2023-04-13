@@ -35,7 +35,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity CEMES_IP_SPLIT_MIO is
 --  Port ( );
     Port (clk : in std_logic;
-          DATA_IN : in std_logic_vector (6 downto 0):=(others=>'0');
+          DATA_IN : in std_logic_vector (11 downto 0):=(others=>'0');
           Type_Wave_OUT1 : out std_logic_vector (2 downto 0):=(others=>'0');
           Type_Wave_OUT2 : out std_logic_vector (2 downto 0):=(others=>'0');
           GATING : out std_logic_vector (2 downto 0):=(others=>'0');
@@ -48,8 +48,9 @@ end CEMES_IP_SPLIT_MIO;
 architecture Behavioral of CEMES_IP_SPLIT_MIO is
               --    XXXXXXXXXXXX --CREATION DE SIGNAUX -- XXXXXXXXXXXX
 signal ADRESS : std_logic_vector (1 downto 0):=(others => '0');
-signal WR : std_logic:= '0';
-signal DATA : std_logic_vector (3 downto 0):=(others => '0');
+signal W : std_logic:= '0';
+signal R : std_logic:= '0';
+signal DATA : std_logic_vector (7 downto 0):=(others => '0');
 begin
 
   UT:  process(clk)
@@ -58,13 +59,14 @@ begin
 
                -- XXXXXXXXXXXX--PASSAGE D'INFORMATION -- XXXXXXXXXXXX
               ADRESS <=DATA_IN(1 downto 0 );  ---[ 0 à  3]
-              WR <=DATA_IN(2);  ---[0 à  1 ]
-              DATA <= DATA_IN(6 downto 3);  --[0  à  3 ]
+              W <=DATA_IN(2);  ---[0 à  1 ]
+              R <=DATA_IN(3);  ---[0 à  1 ]
+              DATA <= DATA_IN(11 downto 4);  --[0  à  3 ]
          -- XXXXXXXXXXXX--VARIFICATION DE ADRESS-- XXXXXXXXXXXX
 
                  -- XXXXXXXXXXXX--  ADRESS 0-- XXXXXXXXXXXX
          if  ADRESS = "00" then
-              case WR is
+              case W is
                 when '1' =>
                    Type_Wave_OUT1 <=  DATA(2 downto 0);
                 when '0' =>
@@ -74,7 +76,7 @@ begin
               end case;
                 -- XXXXXXXXXXXX--  ADRESS 1-- XXXXXXXXXXXX
          elsif  ADRESS= "01" then
-              case WR is
+              case W is
                  when '1' =>
                    Type_Wave_OUT2 <=  DATA(2 downto 0);
                  when '0' =>
@@ -85,7 +87,7 @@ begin
 
                -- XXXXXXXXXXXX--  ADRESS 2-- XXXXXXXXXXXX
          elsif  ADRESS="10" then
-                case WR is
+                case W is
                   when '1' =>
                    GATING <=  DATA(2 downto 0);
                   when '0' =>
@@ -95,7 +97,7 @@ begin
                  end case;
              -- XXXXXXXXXXXX--  ADRESS 3-- XXXXXXXXXXXX
          elsif  ADRESS= "11" then
-                 case WR is
+                 case W is
                   when '1' =>
                   Select_frequence<=  DATA(3 downto 0);
                   when '0' =>

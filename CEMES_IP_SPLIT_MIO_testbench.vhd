@@ -32,13 +32,13 @@ end CEMES_IP_SPLIT_MIO_testbench;
 architecture Behavioral of CEMES_IP_SPLIT_MIO_testbench is
 signal clk : std_logic;
 signal Type1,Type2: std_logic_vector(2 downto 0);
-signal  Data : std_logic_vector(6 downto 0);
+signal  Data : std_logic_vector(11 downto 0);
 signal Gating : std_logic_vector(2 downto 0);
 signal Slt_freq : std_logic_vector(3 downto 0);
 
 component CEMES_IP_SPLIT_MIO
     Port (clk : in std_logic ;
-          DATA_IN : in std_logic_vector (6 downto 0):=(others=>'0');
+          DATA_IN : in std_logic_vector (11 downto 0):=(others=>'0');
           Type_Wave_OUT1 : out std_logic_vector (2 downto 0):=(others=>'0');
           Type_Wave_OUT2 : out std_logic_vector (2 downto 0):=(others=>'0');
           GATING : out std_logic_vector (2 downto 0):=(others=>'0');
@@ -53,16 +53,16 @@ Type_Wave_OUT2=> Type2, GATING=>Gating,Select_frequence =>Slt_freq);
 
 genere: process
 begin
-       Data<="0101110";
+       Data<="000000101110";
        clk<='1';
        wait for 30 ns;
-       Data<="0101110";
+       Data<="000000101110";
        clk<='0';
        wait for 30 ns;
-       Data<="0101111";
+       Data<="000000101111";
        clk<='1';
        wait for 30 ns;
-       Data<="0101111";
+       Data<="000000101111";
        clk<='0';
        wait for 30 ns;
 end process; 
