@@ -84,7 +84,7 @@ begin
                  when others =>
                   Type_Wave_OUT2 <= "000";
                end case;
-
+//
                -- XXXXXXXXXXXX--  ADRESS 2-- XXXXXXXXXXXX
          elsif  ADRESS="10" then
                 case W is
