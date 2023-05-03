@@ -47,9 +47,10 @@ end CEMES_IP_SPLIT_MIO;
 
 architecture Behavioral of CEMES_IP_SPLIT_MIO is
               --    XXXXXXXXXXXX --CREATION DE SIGNAUX -- XXXXXXXXXXXX
-signal ADRESS : std_logic_vector (1 downto 0):=(others => '0');
+signal ADRESS : std_logic_vector (1 downto 0):=(others => '0'); --[0 1 2 3 ]
 signal W : std_logic:= '0';
 signal R : std_logic:= '0';
+signal CHANNEL : std_logic:= '0';
 signal DATA : std_logic_vector (7 downto 0):=(others => '0');
 begin
 
@@ -84,7 +85,7 @@ begin
                  when others =>
                   Type_Wave_OUT2 <= "000";
                end case;
-//100
+
                -- XXXXXXXXXXXX--  ADRESS 2-- XXXXXXXXXXXX
          elsif  ADRESS="10" then
                 case W is
