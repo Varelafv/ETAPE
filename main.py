@@ -1,3 +1,5 @@
+from tkinter.ttk import Combobox
+
 import serial.tools.list_ports
 from tkinter import *
 def show():
@@ -13,7 +15,7 @@ def connect():
     porta = 'COM8'  # substitua com o nome da porta serial desejada
     baud_rate = 115200
     timeout = 1
-    b
+
     # abre a porta serial
     ser = serial.Serial(porta, baud_rate, timeout=timeout)
 
@@ -40,26 +42,29 @@ if __name__ == '__main__':
     numero_binario = format(numero_decimal, '08b')
     print(numero_binario)"""
 
+    # função que será executada quando o botão for pressionado
+
+    # cria a janela principal
+    window = Tk()
+
+    # cria o label
+    window.config(background='#2E4053')
+    window.title("CEMES INTERFACE REDPITAYA")
+    window.geometry("700x500")
+    window.iconbitmap("LOGO.ico")
+    window.minsize(700,500)
+    # cria o widget de texto
+    numbers = list(range(1, 11))
+    selected_number = StringVar(window)
+    combo_box1 =Combobox(window, textvariable=selected_number, values=numbers,width =7)
+    combo_box1.pack()
+
+    text_box = Text(window, height=1, width=30)
+    text_box.pack()
+    SET_Button= Button(window,text="SET",command=connect)
+    SET_Button.pack()
+    # cria o botão
 
 
-# função que será executada quando o botão for pressionado
-
-# cria a janela principal
-window = Tk()
-
-# cria o label
-window.config(background='#2E4053')
-window.title("CEMES INTERFACE REDPITAYA")
-window.geometry("700x500")
-window.iconbitmap("LOGO.ico")
-window.minsize(700,500)
-# cria o widget de texto
-text_box = Text(window, height=1, width=30)
-text_box.pack()
-SET_Button= Button(window,text="SET",command=connect)
-SET_Button.pack()
-# cria o botão
-
-
-# inicia o loop principal da interface gráfica
-window.mainloop()
+    # inicia o loop principal da interface gráfica
+    window.mainloop()
