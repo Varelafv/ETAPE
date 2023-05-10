@@ -68,6 +68,6 @@ begin
        wait for 60 ns;
        Data<="0000000100100";
        clk<='0';
-       wait for 30 ns;
+       wait for 60 ns;
 end process; 
 end Behavioral;
