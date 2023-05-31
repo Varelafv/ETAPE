@@ -54,53 +54,79 @@
 #include "init_CT.h"
 #include "reception_uart_CT.h"
 #include "parse_CT.h"
+#include "sleep.h"
 static u8 RecvBuffer[TEST_BUFFER_SIZE];
 int main()
 {
-	int valid ; //= 3;
+    int valid ; //= 3;
     char dir  ;//= 5;
     char DATA [10];
     int i=0;
     int cpt;
 
     init_platform();
-       init();
-        memset(RecvBuffer,0,TEST_BUFFER_SIZE);
-          //Autorization et direction EMIO
-
-              XGpioPs_WritePin(&mio_emio, 54, 0x0);
-              XGpioPs_WritePin(&mio_emio, 55, 0x1);
-              XGpioPs_WritePin(&mio_emio, 56, 0x0);
-              //OUT2
-              XGpioPs_WritePin(&mio_emio, 57, 0x0);
-              XGpioPs_WritePin(&mio_emio, 58, 0x1);
-              XGpioPs_WritePin(&mio_emio, 59, 0x0);
-              //GATING
-              XGpioPs_WritePin(&mio_emio, 60, 1);
-              XGpioPs_WritePin(&mio_emio, 61, 0);
-              XGpioPs_WritePin(&mio_emio, 62,0);
-              //FREQUENCE
-              XGpioPs_WritePin(&mio_emio, 63, 0x1);
-              XGpioPs_WritePin(&mio_emio, 64, 0x1);
-              XGpioPs_WritePin(&mio_emio, 65, 0x0);
-              XGpioPs_WritePin(&mio_emio, 66, 0x0);
-
-          //0011011010001  ,0000000100100
-
-              do {
-             	   reception_uart(RecvBuffer);
-             	   xil_printf("%s \n\r",RecvBuffer);
-             	 //  xil_printf("%c \n\r",RecvBuffer[0]);
-             	  i=0;
-             	 for(cpt = 66; cpt>53; cpt--){
-             		 //bus gpio 28bits
-             		 valid = parse_CP(RecvBuffer,&dir,i) ;
-             		   XGpioPs_WritePin(&mio_emio, cpt, dir);
-             		   i++;
-             	     }
+    init();
+    memset(RecvBuffer,0,TEST_BUFFER_SIZE);
 
 
-                 }while(1);
+    do {
+         reception_uart(RecvBuffer);
+         xil_printf("%s \n\r",RecvBuffer);
+         xil_printf("%c \n\r",RecvBuffer[1]);
+         i=0;
+        /*for(cpt = 66; cpt>53; cpt--){
+            //bus gpio 28bits
+            valid = parse_CP(RecvBuffer,&dir,i) ;
+            XGpioPs_WritePin(&mio_emio, cpt, dir);
+            i++;*/
+         XGpioPs_WritePin(&mio_emio, 56, 0x1); //forcer ecriture W=1
+         XGpioPs_WritePin(&mio_emio, 57, 0x0); //forcer ecriture R=0
+         //CHANNEL CH1-0 CH2-1
+         valid = parse_CP(RecvBuffer,&dir,0) ; //RecvBuffer[1]= 0 ou 1 cette valeur sera affecté au channel
+         XGpioPs_WritePin(&mio_emio, 58, dir);
+         //ADRESS 00 TYPE DE WAVES
+         if(RecvBuffer[1]=='W')
+			 XGpioPs_WritePin(&mio_emio, 54, 0x0);
+			 XGpioPs_WritePin(&mio_emio, 55, 0x0);
+         if(RecvBuffer[1]=='G')
+        	 XGpioPs_WritePin(&mio_emio, 54, 0x1);
+        	 XGpioPs_WritePin(&mio_emio, 55, 0x0);
+         if(RecvBuffer[1]=='F')
+        	  XGpioPs_WritePin(&mio_emio, 54, 0x0);
+        	  XGpioPs_WritePin(&mio_emio, 55, 0x1);
+
+         i=2;
+
+
+         for(cpt = 66; cpt>58; cpt--){
+            //bus gpio 28bits
+            valid = parse_CP(RecvBuffer,&dir,i) ;
+            XGpioPs_WritePin(&mio_emio, cpt, dir);
+            i++;}  //COMMENTER A PARTIR D'ICI
+
+        /*
+         usleep(50000);
+        //ADRESS TYPE GATING
+        XGpioPs_WritePin(&mio_emio, 54, 0x1);
+        XGpioPs_WritePin(&mio_emio, 55, 0x0);
+        i=9;
+        for(cpt = 66; cpt>58; cpt--){
+            //bus gpio 28bits
+            valid = parse_CP(RecvBuffer,&dir,i) ;
+            XGpioPs_WritePin(&mio_emio, cpt, dir);
+            i++;}
+
+        usleep(50000);
+        //ADRESS TYPE FREQUENCE
+        XGpioPs_WritePin(&mio_emio, 54, 0x0);
+        XGpioPs_WritePin(&mio_emio, 55, 0x1);
+        i=17;
+        for(cpt = 66; cpt>58; cpt--){
+            //bus gpio 28bits
+            valid = parse_CP(RecvBuffer,&dir,i) ;
+            XGpioPs_WritePin(&mio_emio, cpt, dir);
+            i++;}*/
+    }while(1);
 
 
     cleanup_platform();
