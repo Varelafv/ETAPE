@@ -1,6 +1,7 @@
 from tkinter.ttk import Combobox
 from tkinter import *
 from generate import *
+from PIL import ImageTk, Image
 
 def show():
     List_Port=[]
@@ -13,6 +14,24 @@ def show():
         List_Port.append(porta.device)
     return(List_Port)
 
+def sub_fene_parametre_f():
+    global sub_fene_parametre
+
+    if sub_fene_parametre is None or not sub_fene_parametre.winfo_exists():
+        sub_fene_parametre= tk.Toplevel(window)
+        sub_fene_parametre.title("Paramettre")
+        sub_fene_parametre.geometry("200x100")
+        sub_fene_parametre.iconbitmap("images/LOGO.ico")
+        sub_fene_parametre.config(background=backgroud_type[0])
+        label = tk.Label(sub_fene_parametre, text="Ceci est une sous-fenêtre")
+        label.pack(pady=20)
+
+        # Fermer la sous-fenêtre
+        def close_subwindow():
+            sub_fene_parametre.destroy()
+
+        close_button = tk.Button(sub_fene_parametre, text="Fermer", command=close_subwindow)
+        close_button.pack()
 
 
 
@@ -27,20 +46,21 @@ if __name__ == '__main__':
 
     #Crée la fenêtre principale.
     window = Tk()
+    sub_fene_parametre = None
      #Configuration windows
     #"#2E4053"
     s = 0;
     backgroud_type=['#2E4053','#101618']
     image_name = ["images/graphsansgrid.PNG", "images/graphsansgrid2.PNG"]
     window.config(background= backgroud_type[s])
-    window.title("CEMES")
+    window.title("CEMES INTERFACE REDIPITAYA")
     window.geometry("700x500")
     window.iconbitmap("images/LOGO.ico")
     window.minsize(700, 500)
     window.maxsize(700, 500)
 
-    label_title = Label(window, text="INTERFACE REDIPITAYA", font="Georgia", bg= backgroud_type[s], fg='white')
-    label_title.pack()
+    #label_title = Label(window, text="INTERFACE REDIPITAYA", font="Georgia", bg= backgroud_type[s], fg='white')
+    #label_title.pack()
     width=200
     height=200
     #***Connexion avec la porte ****
@@ -49,6 +69,9 @@ if __name__ == '__main__':
     Port_label.place(x=20, y=10)
     Port_box = Combobox(window, textvariable=PORT_data, values=Port_disponible, width=7)
     Port_box.place(x=10, y=30)
+
+    Parmt_Button=Button(window,text="IIIII",command=lambda:sub_fene_parametre_f())
+    Parmt_Button.place(x=670,y=5)
    # connetion= Button(window, text="connecter",command=lambda :connect())
     #connetion.place(x=10, y=55)
 
@@ -59,19 +82,26 @@ if __name__ == '__main__':
     canvas=Canvas(window,width=width,height=height,bg= backgroud_type[s],bd=1,highlightthickness=0)
     canvas.create_image(width/2,height/2,image=image)
     canvas.pack()
-    Channel_list= list(range(1, 3))
+
 
     #  ****************************************la liste de Options ****************************************
+    Channel_list = list(range(1, 3))
     Waves_list = ['Sin', 'Square']
     Gating_list = ['0%', '5%', '10%', '15%', '20%', '50%']
     Frequency_list = ['62.5kHz','31.3kHz', '15.6kHz', '7.81kHz', '3.91kHz', '1.95kHz', '977Hz', '488Hz', '244Hz', '122Hz', '61Hz',
                       '30.5Hz', '15Hz', '7.63Hz', '3.81Hz']
     Select_list=['Waves','Gating','Freq']
+    #*********************LES DATA DE RECUPERATION
     Select_data=StringVar(window)
+    Select_data.set('Waves')#--Definir valeur de default
     Waves_data = StringVar(window)
+    Waves_data.set('Sin')
     Gating_data = StringVar(window)
+    Gating_data.set('0%')
     Frequency_data = StringVar(window)
+    Frequency_data.set('62.5kHz')
     Channel_data =StringVar(window)
+    Channel_data.set('1')
 
     #CREIATION DE FRAME 1 ****************************************
 
@@ -91,6 +121,7 @@ if __name__ == '__main__':
     Waves_label = Label(frame_1, text="Waves", font="Georgia", bg=backgroud_type[s], fg='white')
     Waves_label.grid(row=2, column=0)
     Waves_box1 = Combobox(frame_1, textvariable=Waves_data, values=Waves_list, width=7)
+
     Waves_box1.grid(row=3, column=0)
 
     vide = Label(frame_1, text="VIDEVIDE", font="Georgia", bg=backgroud_type[s], fg=backgroud_type[s])
@@ -116,8 +147,9 @@ if __name__ == '__main__':
     Newvalue_label.grid(row=5, column=2)
     Select_box=Combobox(frame_2,textvariable=Select_data,values=Select_list,width=7)
     Select_box.grid(row=6,column=1)
-    SET_Button = Button(frame_2, text="Set Value ",relief="sunken",bg="#08D9FA",command=lambda:generate(PORT_data.get(),Channel_data.get(),Waves_data.get(),Gating_list.index(Gating_data.get()),Frequency_list.index(Frequency_data.get()),Select_data.get()))
+    SET_Button = Button(frame_2, text="Set Value ",bg="#08D9FA",command=lambda:generate(PORT_data.get(),Channel_data.get(),Waves_data.get(),Gating_list.index(Gating_data.get()),Frequency_list.index(Frequency_data.get()),Select_data.get()))
     SET_Button.grid(row=6, column=3)
+    #relief="sunken",
     #*********************************************
     frame_2.pack()
 

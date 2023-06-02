@@ -1,18 +1,32 @@
 import tkinter as tk
 from tkinter import messagebox
 
-def handle_button_click():
-    try:
-        # Code qui génère une erreur
-        result = 10 / 0
-    except Exception as e:
-        # Affiche une fenêtre d'erreur
-        messagebox.showerror("Erreur", "Une erreur s'est produite : " + str(e))
+
+def open_subwindow():
+    global subwindow
+
+    # Vérifier si la sous-fenêtre est déjà ouverte
+    if subwindow is None or not subwindow.winfo_exists():
+        subwindow = tk.Toplevel(root)
+        subwindow.title("Sous-fenêtre")
+        subwindow.geometry("200x100")
+
+        label = tk.Label(subwindow, text="Ceci est une sous-fenêtre")
+        label.pack(pady=20)
+
+        # Fermer la sous-fenêtre
+        def close_subwindow():
+            subwindow.destroy()
+
+        close_button = tk.Button(subwindow, text="Fermer", command=close_subwindow)
+        close_button.pack()
+
 
 root = tk.Tk()
+subwindow = None
 
-# Crée un bouton
-button = tk.Button(root, text="Cliquer", command=handle_button_click)
-button.pack()
+# Bouton pour ouvrir la sous-fenêtre
+open_button = tk.Button(root, text="Ouvrir la sous-fenêtre", command=open_subwindow)
+open_button.pack(pady=20)
 
 root.mainloop()

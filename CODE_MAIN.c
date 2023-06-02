@@ -46,6 +46,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include "platform.h"
 #include "xil_printf.h"
 #include "xgpiops.h"
@@ -59,42 +60,40 @@ static u8 RecvBuffer[TEST_BUFFER_SIZE];
 int main()
 {
     int valid ; //= 3;
-    char dir  ;//= 5;
-    char DATA [10];
+    int dir  ;//= 5;
     int i=0;
     int cpt;
 
     init_platform();
     init();
-    memset(RecvBuffer,0,TEST_BUFFER_SIZE);
 
-
+    char str[] = "0W00000001!";
+   // strcpy(RecvBuffer, str);
     do {
+    	 memset(RecvBuffer,0,TEST_BUFFER_SIZE);
          reception_uart(RecvBuffer);
          xil_printf("%s \n\r",RecvBuffer);
          xil_printf("%c \n\r",RecvBuffer[1]);
          i=0;
-        /*for(cpt = 66; cpt>53; cpt--){
-            //bus gpio 28bits
-            valid = parse_CP(RecvBuffer,&dir,i) ;
-            XGpioPs_WritePin(&mio_emio, cpt, dir);
-            i++;*/
-         XGpioPs_WritePin(&mio_emio, 56, 0x1); //forcer ecriture W=1
+
+         XGpioPs_WritePin(&mio_emio, 56, 0x0); //forcer ecriture W=1
          XGpioPs_WritePin(&mio_emio, 57, 0x0); //forcer ecriture R=0
          //CHANNEL CH1-0 CH2-1
-         valid = parse_CP(RecvBuffer,&dir,0) ; //RecvBuffer[1]= 0 ou 1 cette valeur sera affecté au channel
-         XGpioPs_WritePin(&mio_emio, 58, dir);
+
+
          //ADRESS 00 TYPE DE WAVES
-         if(RecvBuffer[1]=='W')
+         if(RecvBuffer[1]=='W'){
 			 XGpioPs_WritePin(&mio_emio, 54, 0x0);
 			 XGpioPs_WritePin(&mio_emio, 55, 0x0);
-         if(RecvBuffer[1]=='G')
+         }
+         if(RecvBuffer[1]=='G'){
         	 XGpioPs_WritePin(&mio_emio, 54, 0x1);
         	 XGpioPs_WritePin(&mio_emio, 55, 0x0);
-         if(RecvBuffer[1]=='F')
+         }
+         if(RecvBuffer[1]=='F'){
         	  XGpioPs_WritePin(&mio_emio, 54, 0x0);
         	  XGpioPs_WritePin(&mio_emio, 55, 0x1);
-
+         }
          i=2;
 
 
@@ -103,29 +102,10 @@ int main()
             valid = parse_CP(RecvBuffer,&dir,i) ;
             XGpioPs_WritePin(&mio_emio, cpt, dir);
             i++;}  //COMMENTER A PARTIR D'ICI
+             valid = parse_CP(RecvBuffer,&dir,0) ; //RecvBuffer[1]= 0 ou 1 cette valeur sera affecté au channel
+             XGpioPs_WritePin(&mio_emio, 58, dir);
+             XGpioPs_WritePin(&mio_emio, 56, 0x1); //forcer ecriture W=1
 
-        /*
-         usleep(50000);
-        //ADRESS TYPE GATING
-        XGpioPs_WritePin(&mio_emio, 54, 0x1);
-        XGpioPs_WritePin(&mio_emio, 55, 0x0);
-        i=9;
-        for(cpt = 66; cpt>58; cpt--){
-            //bus gpio 28bits
-            valid = parse_CP(RecvBuffer,&dir,i) ;
-            XGpioPs_WritePin(&mio_emio, cpt, dir);
-            i++;}
-
-        usleep(50000);
-        //ADRESS TYPE FREQUENCE
-        XGpioPs_WritePin(&mio_emio, 54, 0x0);
-        XGpioPs_WritePin(&mio_emio, 55, 0x1);
-        i=17;
-        for(cpt = 66; cpt>58; cpt--){
-            //bus gpio 28bits
-            valid = parse_CP(RecvBuffer,&dir,i) ;
-            XGpioPs_WritePin(&mio_emio, cpt, dir);
-            i++;}*/
     }while(1);
 
 
