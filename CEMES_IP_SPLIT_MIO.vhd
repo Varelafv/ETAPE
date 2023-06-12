@@ -53,6 +53,7 @@ architecture Behavioral of CEMES_IP_SPLIT_MIO is
     signal R : std_logic := '0';
     signal CHANNEL1, CHANNEL2 : std_logic := '0';
     signal DATA : std_logic_vector (7 downto 0) := (others => '0');
+	signal signal_Type_Wave_OUT1,signal_Type_Wave_OUT2 : std_logic_vector (2 downto 0) := (others => '0');
 begin
 
     UT: process(clk)
@@ -79,14 +80,14 @@ begin
                 case W is
                     when '1' =>
                         Type_Wave_OUT1 <= DATA(2 downto 0);
-
+                        signal_Type_Wave_OUT1<= DATA(2 downto 0);
                     when others =>
                         --VIDE
                 end case;
             -- XXXXXXXXXXXX--  ADRESS 0 TYPE WAVES -- XXXXXXXXXXXX
 
             -- XXXXXXXXXXXX--  ADRESS 1 GATING-- XXXXXXXXXXXX
-            elsif ADRESS = "01" then
+            elsif ADRESS = "01" and signal_Type_Wave_OUT1= "010" then
                 case W is
                     when '1' =>
                         GATING_CH1 <= DATA(2 downto 0);
@@ -111,15 +112,16 @@ begin
                 case W is
                     when '1' =>
                         Type_Wave_OUT2 <= DATA(2 downto 0);
+						signal_Type_Wave_OUT2 <= DATA(2 downto 0);
                     when others =>
                         --VIDE
                 end case;
             -- XXXXXXXXXXXX--  ADRESS 0 TYPE WAVES -- XXXXXXXXXXXX
 
             -- XXXXXXXXXXXX--  ADRESS 1 GATING-- XXXXXXXXXXXX
-            elsif ADRESS = "01" then
+            elsif ADRESS = "01" and signal_Type_Wave_OUT2= "010" then
                 case W is
-                    when '1' =>
+                    when '1'  =>
                         GATING_CH2 <= DATA(2 downto 0);
                     when others =>
                         --VIDE
